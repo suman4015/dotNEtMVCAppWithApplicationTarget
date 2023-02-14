@@ -1,0 +1,30 @@
+Jenkinsfile (Declarative Pipeline)
+pipeline {
+			agent any
+			stages {
+				stage('Source'){
+					steps{
+						checkout([$class: 'GitSCM', 
+						branches: [[name: '*/main']], 
+						doGenerateSubmoduleConfigurations: false, 
+						extensions: [], 
+						submoduleCfg: [], 
+						userRemoteConfigs: [[credentialsId: '07143de3-b7a5-4446-82dd-b331876a43e8', 
+						url: 'https://github.com/suman4015/dotNetMVCApp.git']]])
+					}
+				}
+				stage('Build') {
+    					steps {
+    					    bat "\"${tool 'MSBuild'}\" AWSWebApplication.sln 
+						/p:DeployOnBuild=true 
+						/p:DeployDefaultTarget=WebPublish 
+						/p:WebPublishMethod=FileSystem 
+						/p:SkipInvalidConfigurations=true 
+						/t:build /p:Configuration=Release 
+						/p:Platform=\"Any CPU\" 
+						/p:DeleteExistingFiles=True 
+						/p:publishUrl=C:\Publish Code\JenkinsPublishMvcApp"
+    					}
+				}
+			}
+}
